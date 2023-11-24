@@ -1,0 +1,103 @@
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+
+const BookList = () => {
+  const [books, setBooks] = useState([
+    { id: 1, title: 'Irrfan Khan: A Life in Movies', author: 'Shubhra Gupta' },
+    { id: 2, title: 'The World: A Family History', author: 'Simon Sebag Montefiore' },
+    { id: 3, title: 'Breaking Barriers: the Story of a Dalit Chief Secretary', author: 'Kaki Madhava Rao' },
+    { id: 4, title: 'Ambedkar: A Life', author: 'Shashi Tharoor' }
+  ]);
+
+  const [newBook, setNewBook] = useState({
+    id: '',
+    title: '',
+    author: ''
+  });
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get('https://example.com/books');
+      const data = response.data;
+      const transformedData = data.data.map(book => ({
+        id: book.id,
+        title: book.title,
+        author: book.author
+      }));
+      setBooks([...books, ...transformedData]);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  const handleInputChange = event => {
+    const { name, value } = event.target;
+    setNewBook({
+      ...newBook,
+      [name]: value
+    });
+  };
+
+  const handleAddBook = () => {
+    const updatedBooks = [...books, newBook];
+    setBooks(updatedBooks);
+    setNewBook({ id: '', title: '', author: '' });
+  };
+
+  return (
+    <div>
+      <h1>Book List</h1>
+      <ul>
+        {books.map(book => (
+          <li key={book.id}>
+            <strong>{book.title}</strong> by {book.author}
+          </li>
+        ))}
+      </ul>
+      <div>
+        <h2>Add a New Book</h2>
+        <form>
+          <label>
+            ID:
+            <input
+              type="text"
+              name="id"
+              value={newBook.id}
+              onChange={handleInputChange}
+            />
+          </label>
+          <br />
+          <label>
+            Title:
+            <input
+              type="text"
+              name="title"
+              value={newBook.title}
+              onChange={handleInputChange}
+            />
+          </label>
+          <br />
+          <label>
+            Author:
+            <input
+              type="text"
+              name="author"
+              value={newBook.author}
+              onChange={handleInputChange}
+            />
+          </label>
+          <br />
+          <button type="button" onClick={handleAddBook}>
+            Add Book
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default BookList;
