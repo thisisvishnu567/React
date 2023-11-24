@@ -1,0 +1,50 @@
+import React from 'react';
+
+const withProductList = (products) => (WrappedComponent) => {
+  return class extends React.Component {
+    render() {
+      return <WrappedComponent products={products} />;
+    }
+  };
+};
+
+const ProductList = ({ products }) => (
+  <div>
+    <h2>Product List</h2>
+    <ul>
+      {products.map((product, index) => (
+        <li key={index}>
+          <img
+            src={product.imageUrl}
+            alt={product.name}
+            style={{ maxWidth: '150px', maxHeight: '150px' }} // Adjust the size as needed
+          />
+          <p>{product.name}</p>
+          <p>Price: ${product.price}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
+);
+
+const sampleProducts = [
+  {
+    name: 'Apple',
+    price: 19.99,
+    imageUrl: 'https://nurserynisarga.in/wp-content/uploads/2021/08/Hot-climate-Apple.jpg',
+  },
+  {
+    name: 'Mango',
+    price: 29.99,
+    imageUrl: 'https://m.media-amazon.com/images/I/61m0sXqceLL._AC_UF1000,1000_QL80_.jpg',
+  },
+];
+
+const EnhancedProductList = withProductList(sampleProducts)(ProductList);
+const App = () => (
+  <div>
+    <EnhancedProductList />
+  </div>
+);
+
+export default App;
